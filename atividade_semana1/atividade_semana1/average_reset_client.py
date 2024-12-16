@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import rclpy
 from rclpy.node import Node
-from example_interfaces.srv import SetBool #importanto um servico do tipo SetBool
+from temperature_interfaces.srv import ResetAvg #importanto um custom service do tipo ResetAvg
 
 class AverageResetNode(Node):
     def __init__(self):
@@ -9,12 +9,12 @@ class AverageResetNode(Node):
         self.call_reset_average(True) #chamada da funcao call_reset_average com argumento True para que
                                       #quando o no for chamado, o calculo da media seja resetada
     def call_reset_average(self, reset):
-        client = self.create_client(SetBool, "reset_average") #criando um cliente para o servico reset_average
+        client = self.create_client(ResetAvg, "reset_average") #criando um cliente para o servico reset_average
         while not client.wait_for_service(1.0):
             self.get_logger().warn("Waiting for Server Reset Average...")
 
-        request = SetBool.Request()
-        request.data = reset
+        request = ResetAvg.Request()
+        request.reset_avg = reset
 
         future = client.call_async(request)
         future.add_done_callback(self.callback_call_reset_average)
